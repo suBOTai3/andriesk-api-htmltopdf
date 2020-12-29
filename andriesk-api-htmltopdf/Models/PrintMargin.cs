@@ -1,6 +1,5 @@
 ﻿namespace andriesk_api_htmltopdf.Models
 {
-
     public class PrintMargin
     {
         private string _valueLeft;

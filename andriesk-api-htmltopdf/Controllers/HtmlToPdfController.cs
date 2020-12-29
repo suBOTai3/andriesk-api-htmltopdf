@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using andriesk_api_htmltopdf.Models;
@@ -29,7 +30,6 @@ namespace andriesk_api_htmltopdf.Controllers
         }
           
         [HttpPost]
-        [Produces("application/pdf")]        
         public async Task<ActionResult<byte[]>> Convert()
         {
             var htmlString = "";
@@ -57,14 +57,16 @@ namespace andriesk_api_htmltopdf.Controllers
                 var byteArr = WkHtmlToPdf.GeneratePDF(options, _configuration).GetAwaiter().GetResult();
                 var memStream = new System.IO.MemoryStream(byteArr);
 
-                return StatusCode(200, new FileStreamResult(memStream, "application/pdf")
+                Response.ContentType = new MediaTypeHeaderValue("application/pdf").ToString();
+                return new FileStreamResult(memStream, "application/pdf")
                 {
                     FileDownloadName = downloadName
-                }) ;
+                };
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex.ToString());
+                Response.ContentType = new MediaTypeHeaderValue("application/json").ToString();
                 return StatusCode(500, new { message = "Unable to convert the html to pdf" });
             }
         }

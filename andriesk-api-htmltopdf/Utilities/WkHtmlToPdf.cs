@@ -29,7 +29,7 @@ namespace andriesk_api_htmltopdf.Utilities
 
                 ContainerFileSystem.CreateHtmlFile("html" + 1.ToString().PadLeft(2, '0') + ".html", requestOptions.HTML);
 
-                result = BashExecute.ThisCommand($"wkhtmltopdf {commandlineArgs} --zoom 1.3 --enable-local-file-access <<< ls pdf/*.html pdf/{requestOptions.FileName}");
+                BashExecute.ThisCommand($"wkhtmltopdf {commandlineArgs} --enable-local-file-access <<< ls pdf/*.html pdf/{requestOptions.FileName}");
             }
 
             Console.WriteLine(result);
@@ -48,16 +48,18 @@ namespace andriesk_api_htmltopdf.Utilities
         {
             var commandlineArgs = "";
 
-            commandlineArgs += " " + requestOptions.Layout ?? configuration["wkHtmlToPdf:Layout"] ?? "-O Portrait";
-            commandlineArgs += " " + requestOptions.PageSize ?? configuration["wkHtmlToPdf:PageSize"] ?? "-s A4";
             commandlineArgs += " " + configuration["wkHtmlToPdf:AllowJavascript"] ?? "-n --disable-javascript";
-            commandlineArgs += " " + requestOptions.Grayscale ?? configuration["wkHtmlToPdf:Grayscale"] ?? "";                          // default = no  (see --grayscale)
+            commandlineArgs += " " + requestOptions.DPI ?? configuration["wkHtmlToPdf:DPI"] ?? "96";               
+            commandlineArgs += " " + requestOptions.EnableHtmlFormRender ?? configuration["wkHtmlToPdf:EnableHtmlFormRender"] ?? "";            // default = no  (see --enable-forms)
+            commandlineArgs += " " + requestOptions.GenerateBookmarks ?? configuration["wkHtmlToPdf:GenerateBookmarks"] ?? "";                  // default = yes (see --no-outline)
+            commandlineArgs += " " + requestOptions.Grayscale ?? configuration["wkHtmlToPdf:Grayscale"] ?? "";                                  // default = no  (see --grayscale)
+            commandlineArgs += " " + requestOptions.Layout ?? configuration["wkHtmlToPdf:Layout"] ?? "Portrait";
             commandlineArgs += " " + requestOptions.Margins.Left ?? configuration["wkHtmlToPdf:Margins:Left"] ?? "-L 10mm";
             commandlineArgs += " " + requestOptions.Margins.Top ?? configuration["wkHtmlToPdf:Margins:Top"] ?? "-T 10mm";
             commandlineArgs += " " + requestOptions.Margins.Right ?? configuration["wkHtmlToPdf:Margins:Right"] ?? "-R 10mm";
             commandlineArgs += " " + requestOptions.Margins.Bottom ?? configuration["wkHtmlToPdf:Margins:Bottom"] ?? "-B 10mm";
-            commandlineArgs += " " + requestOptions.GenerateBookmarks ?? configuration["wkHtmlToPdf:GenerateBookmarks"] ?? "";                  // default = yes (see --no-outline)
-            commandlineArgs += " " + requestOptions.EnableHtmlFormRender ?? configuration["wkHtmlToPdf:EnableHtmlFormRender"] ?? "";               // default = no  (see --enable-forms)
+            commandlineArgs += " " + requestOptions.PageSize ?? configuration["wkHtmlToPdf:PageSize"] ?? "A4";
+            commandlineArgs += " " + requestOptions.ViewPortSize ?? configuration["wkHtmlToPdf:ViewPortSize"] ?? "1920x1080";               // default = no  (see --enable-forms)
 
             return commandlineArgs;
         }

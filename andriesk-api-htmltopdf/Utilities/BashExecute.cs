@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -27,6 +28,11 @@ namespace andriesk_api_htmltopdf.Utilities
                 }
             };
             process.Start();
+
+            StreamReader myStreamReader = process.StandardError;
+            // Read the standard error of net.exe and write it on to console.
+            var error = myStreamReader.ReadToEnd();
+
             string result = process.StandardOutput.ReadToEnd();
             process.WaitForExit();
             return result;
