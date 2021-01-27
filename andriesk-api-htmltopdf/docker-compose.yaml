@@ -1,0 +1,32 @@
+version: "3.4"
+services:
+ 
+  andriesk-api-htmltopdf:
+    image: andriesk-api-htmltopdf:latest
+    container_name: andriesk-api-htmltopdf
+    restart: always
+    environment:
+        - wkHtmlToPdf__Layout=-O Portrait
+        - wkHtmlToPdf__PageSize=-s A4
+        - wkHtmlToPdf__AllowJavascript=-n --disable-javascript
+        - wkHtmlToPdf__Margins__Left=-L 10mm
+        - wkHtmlToPdf__Margins__Top=-T 10mm
+        - wkHtmlToPdf__Margins__Right=-R 10mm
+        - wkHtmlToPdf__Margins__Bottom=-B 10mm
+       # - wkHtmlToPdf__Grayscale=              # this defaults to false
+       # - wkHtmlToPdf__GenerateBookmarks=      # this defaults to true
+       # - wkHtmlToPdf__EnableHtmlFormRender=   # this defaults to false
+    networks:
+      - nginx_backend
+    volumes:
+         # locationOutside:locationInside
+        #- "/etc/timezone:/etc/timezone:ro"
+        # - "/etc/localtime:/etc/localtime:ro"
+        - "/mnt/d/repos/andriesk-api-htmltopdf/logs:/app/log:rw"
+    ports:
+        - 8030:80
+
+
+networks:
+   nginx_backend:
+     external: true
